@@ -1,0 +1,162 @@
+<% layout('layout') %>
+
+<!-- Navigatiron -->
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+    	  <div class="navbar-header">
+        	  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            	<span class="icon-bar"></span>
+            	<span class="icon-bar"></span>
+            	<span class="icon-bar"></span>
+          	</button>
+          	<a class="navbar-brand" id="home" href="#" onclick="return false;">Futuretek Dashboard</a>
+      	</div>
+      	<div class="collapse navbar-collapse">
+          	<ul class="nav navbar-nav">
+            	<li id="monitoring"><a href="#" onclick="return false;">Monitoring</a></li>
+            	<li id="setting" class="active"><a href="#" onclick="return false;">Setting</a></li>
+            	<li><a href="#">IFTTT</a></li>
+          	</ul>
+ 	    </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<!-- add Sensor Button -->
+<div class="container">
+	<button id="btn_temperature" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+		Temperature Sensor <span class="badge">2</span>
+	</button>
+	<button id="btn_humidity" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+		Humidity Sensor <span class="badge">2</span>
+	</button>
+	<button id="btn_co2" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+		CO2 Sensor <span class="badge">2</span>
+	</button>
+	<button id="btn_camera" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+		Web Camera <span class="badge">1</span>
+	</button>
+</div>
+<br>
+
+<!-- added Sensor list 동적으로 추가 -->
+<div class="container">
+	<table id="table_sensor" class="table table-condensed">
+		<thread>
+			<tr>
+				<th>index</th>
+				<th>Name</th>
+				<th>Status</th>
+				<th>Description</th>
+				<th>Actions</th>
+			</tr>
+		</thread>
+		<tbody id="table_body">
+			
+		</tbody>
+		<!--
+		<tr>
+			<td>1</td>
+			<td>실내온도</td>
+			<td>ON</td>
+			<td>1층 실내온도</td>
+		</tr>
+		<tr>
+			<td>2</td>
+			<td>실내온도</td>
+			<td>ON</td>
+			<td>2층 실내온도</td>
+		</tr>
+		<tr>
+			<td>3</td>
+			<td>주차장 CCTV</td>
+			<td>OFF</td>
+			<td>주차장 차량 점검</td>
+		</tr>
+		-->
+	</table>
+</div>
+
+<!-- Add Sensor Setting Popup -->
+<div class="modal fade" id="modal_add_sensor">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        		<h4 class="modal-title" id="title_add_sensor">Add Sensor</h4>
+      		</div>
+      		<div class="modal-body">
+      			<label>ID</label>
+      			<select class="form-control">
+      				<option>qwoiehr1o4130941</option>
+      				<option>asg1o4323234wed2</option>
+      				<option>5uiktr1o4130er55</option>
+      			</select>
+      			<br>
+      			<label for="nameInput">Name</label>
+				<input type="text" class="form-control" id="nameInput" placeholder="Name">
+				<br>
+        		<label for="descriptionInput">Description</label>
+				<input type="text" class="form-control" id="descriptionInput" placeholder="Description">
+				<br>
+				<label for="status">Status</label>
+				<br>
+				<div class="btn-group" data-toggle="buttons">
+					<label class="btn btn-success">
+						<input type="radio" name="status" id="radioOn"> ON
+					</label>
+					<label class="btn btn-danger">
+						<input type="radio" name="status" id="radioOff"> OFF
+					</label>
+				</div>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-primary" id="btn_save_sensor">Save</button>
+      		</div>
+    	</div><!-- /.modal-content -->
+  	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Edit Sensor Setting Popup -->
+<div class="modal fade" id="modal_edit_sensor">
+  	<div class="modal-dialog">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        		<h4 class="modal-title">Edit Sensor</h4>
+      		</div>
+      		<div class="modal-body">
+      			<label>ID</label>
+      			<select class="form-control">
+      				<option>qwoiehr1o4130941</option>
+      				<option>asg1o4323234wed2</option>
+      				<option>5uiktr1o4130er55</option>
+      			</select>
+      			<br>
+      			<label for="nameInput">Name</label>
+				<input type="text" class="form-control" id="nameInput" placeholder="Name">
+				<br>
+        		<label for="descriptionInput">Description</label>
+				<input type="text" class="form-control" id="descriptionInput" placeholder="Description">
+				<br>
+				<label for="status">Status</label>
+				<br>
+				<div class="btn-group" data-toggle="buttons">
+					<label class="btn btn-success">
+						<input type="radio" name="status" id="radioOn"> ON
+					</label>
+					<label class="btn btn-danger">
+						<input type="radio" name="status" id="radioOff"> OFF
+					</label>
+				</div>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-primary" id="btn_edit_sensor">Save</button>
+        		<button type="button" class="btn btn-danger" id="btn_delete_sensor">Delete</button>
+      		</div>
+    	</div><!-- /.modal-content -->
+  	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script type="text/javascript" src="javascripts/util.js"></script>
+<script type="text/javascript" src="javascripts/setting.js"></script>
