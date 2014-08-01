@@ -7,21 +7,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
-var setting = require('./routes/setting');
-var sensors = require('./routes/sensors');
-//var mongoose = require('mongoose');
+var sensorlist = require('./routes/sensorlist');
 
 var app = express();
-
-//mongoose.connect('mongodb://kindmong:kid10129@dbh85.mongolab.com:27857/kindmongdb');
-//var db = mongoose.connection;
-
-//db.on('error', console.error);
-//db.once('open', function() {
-    // Create your schemas and models here.
-//    console.log( "connection successful.." );
-//});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -36,9 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.engine('ejs', ejsEngine);
 
 app.use('/', routes);
-app.use('/sensors', sensors);
-app.use('/users', users);
-app.use('/setting', setting);
+app.use('/sensorlist', sensorlist);
 
 
 /// catch 404 and forwarding to error handler

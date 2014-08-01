@@ -3,7 +3,7 @@
     <envs>
       <env name="DEBUG" value="futuretek_dashboard" />
     </envs>
-    <browser url="http://localhost:3000/" />
+    <browser with-js-debugger="true" url="http://localhost:3000/" />
     <RunnerSettings RunnerId="NodeJS.debug" />
     <RunnerSettings RunnerId="NodeJS.run" />
     <ConfigurationWrapper RunnerId="NodeJS.debug" />

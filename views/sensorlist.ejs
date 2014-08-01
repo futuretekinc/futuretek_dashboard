@@ -14,66 +14,70 @@
       	<div class="collapse navbar-collapse">
           	<ul class="nav navbar-nav">
             	<li id="monitoring"><a href="#" onclick="return false;">Monitoring</a></li>
-            	<li id="setting" class="active"><a href="#" onclick="return false;">Setting</a></li>
+            	<li id="sensorlist" class="active"><a href="#" onclick="return false;">Sensor List</a></li>
             	<li><a href="#">IFTTT</a></li>
           	</ul>
  	    </div><!--/.nav-collapse -->
     </div>
 </div>
 
-<!-- add Sensor Button -->
+<!--
 <div class="container">
-	<button id="btn_temperature" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+    <button id="btn_temperature" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
 		Temperature Sensor <span class="badge">2</span>
 	</button>
-	<button id="btn_humidity" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
-		Humidity Sensor <span class="badge">2</span>
-	</button>
-	<button id="btn_co2" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
-		CO2 Sensor <span class="badge">2</span>
-	</button>
-	<button id="btn_camera" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
-		Web Camera <span class="badge">1</span>
-	</button>
-</div>
-<br>
 
-<!-- added Sensor list 동적으로 추가 -->
+</div>
+-->
+
+<!-- Sensor list 동적으로 불러와 List 추가 -->
 <div class="container">
-	<table id="table_sensor" class="table table-condensed">
-		<thread>
-			<tr>
-				<th>index</th>
-				<th>Name</th>
-				<th>Status</th>
-				<th>Description</th>
-				<th>Actions</th>
-			</tr>
-		</thread>
-		<tbody id="table_body">
-			
-		</tbody>
-		<!--
-		<tr>
-			<td>1</td>
-			<td>실내온도</td>
-			<td>ON</td>
-			<td>1층 실내온도</td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>실내온도</td>
-			<td>ON</td>
-			<td>2층 실내온도</td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>주차장 CCTV</td>
-			<td>OFF</td>
-			<td>주차장 차량 점검</td>
-		</tr>
-		-->
-	</table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Sensor List</h3>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table id="table_sensor" class="table">
+                    <tr>
+                        <th>#</th>
+                        <th>Edge Node</th>
+                        <th>ID</th>
+                        <th>Sensor</th>
+                        <th>Status</th>
+                        <th>Value</th>
+                        <th>Config</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>FTE-ES1</td>
+                        <td>52c10000446c000f0013001027894e45</td>
+                        <td>Temperature</td>
+                        <td>ON</td>
+                        <td>28.5</td>
+                        <td>
+                            <button id="btn_config" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+                                Config
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>FTE-ES1</td>
+                        <td>52c10000446c000f0013001027894e46</td>
+                        <td>Humidity</td>
+                        <td>ON</td>
+                        <td>60.5</td>
+                        <td>
+                            <button id="btn_config" type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_add_sensor">
+                                Config
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Add Sensor Setting Popup -->
@@ -159,4 +163,4 @@
   	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script type="text/javascript" src="javascripts/util.js"></script>
-<script type="text/javascript" src="javascripts/setting.js"></script>
+<script type="text/javascript" src="javascripts/sensorlist.js"></script>

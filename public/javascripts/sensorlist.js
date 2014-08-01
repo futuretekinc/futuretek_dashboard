@@ -5,8 +5,6 @@
 
 $("#btn_save_sensor").click ( function() {
 	var data = "<tr><td>1</td><td>실내온도</td><td>ON</td><td>1층 실내온도</td><td><button id='btn_edit' type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modal_edit_sensor'>Edit</button></td></tr>";
-   	$("#table_body").append( "<tr>" );
-   	$("#table_body").append( "<td>$("")</td>" );
    	$("#table_body").append( data );
    	$('#modal_add_sensor').modal('hide');
 });

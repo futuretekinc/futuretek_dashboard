@@ -1,5 +1,5 @@
-$('#setting').click ( function () {
-	window.location.href = "setting";
+$('#sensorlist').click ( function () {
+	window.location.href = "sensorlist";
 });
 
 $('#monitoring').click ( function () {
