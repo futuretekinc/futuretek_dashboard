@@ -1,7 +1,9 @@
 var index=0;
+var sensorId;
 
-function setSensorInfo(_index, _edgenode, _sensor) {
+function setSensorInfo(_index, _edgenode, _sensor, _sensorId) {
     index = _index;
+    sensorId = _sensorId;
     $('#idInput').val(_edgenode);
     $('#sensorInput').val(_sensor);
     $('#modal_add_sensor').modal();
@@ -22,7 +24,7 @@ $("#btn_save_sensor").click ( function() {
         return;
     }
     $.ajax({
-        url: "/sensorlist/savejson/" + index + "/" + $('#idInput').val() + "/" + $('#sensorInput').val() + "/" + $('#nameInput').val() + "/" + $('#descriptionInput').val(),
+        url: "/sensorlist/savejson/" + index + "/" + $('#idInput').val() + "/" + $('#sensorInput').val() + "/" + $('#nameInput').val() + "/" + $('#descriptionInput').val() + "/" + sensorId,
         type: 'get',
         dataType: 'text',
         success: function (data) {

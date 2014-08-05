@@ -55,7 +55,7 @@
                         </td>
                         <td>
                             <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'
-                                    onClick='setSensorInfo("<%= i %>","<%= edgenode[1].value + ' (' + edgenode[0].value + ')' %>", "<%= sensors[i].name %>")'>
+                                    onClick='setSensorInfo("<%= i %>","<%= edgenode[1].value + ' (' + edgenode[0].value + ')' %>", "<%= sensors[i].name %>", "<%= sensors[i].objects[0].id %>")'>
                                 Setting
                             </button>
                         </td>

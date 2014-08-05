@@ -27,33 +27,45 @@ router.get('/', function(req, res) {
     }
 });
 
-//// readFile
-var readJson;
-fs.readFile('./db/monitoring.json', function (err, data) {
-    if (err) throw err;
-    console.log(JSON.parse(data));
-    readJson = JSON.parse(data);
-    console.log(readJson[0]);
-});
+console.log(querySensorId("01010001"));
+function querySensorId(_id) {
+    var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+    var json = JSON.parse(readData);
 
-router.get('/savejson/:index/:edgenode/:sensor/:name/:desc?', function(req, res) {
+    // 쿼리
+    for (var i = 0, l = json.length; i < l; i++){
+
+        if (json[i]['sensorId'] == _id) {
+            return json[i];
+        }
+    }
+    return false;
+}
+
+router.get('/savejson/:index/:edgenode/:sensor/:name/:desc/:sensorId?', function(req, res) {
     if (req.params.edgenode == undefined || req.params.sensor == undefined ||
-        req.params.name == undefined || req.params.desc == undefined ) {
+        req.params.name == undefined || req.params.desc == undefined || req.params.sensorId == undefined) {
         res.send('fail');
     } else {
         res.send("success");
-        writeMonitoringList(index, req.params.edgenode, req.params.sensor, req.params.name, req.params.desc);
+        writeMonitoringList(req.params.index, req.params.edgenode, req.params.sensor, req.params.name, req.params.desc, req.params.sensorId);
     }
 });
 
-function writeMonitoringList(_index, _edgenode, _id, _name, _desc) {
-    var json = {
+function writeMonitoringList(_index, _edgenode, _sensor, _name, _desc, _sensorId) {
+
+    // 파일이 없거나 비어있으면 새로 만들기를 해야함.
+    var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+    var json = JSON.parse(readData);
+
+    json.push({
         index: _index,
         edgenode: _edgenode,
-        id: _id,
+        sensor: _sensor,
+        sensorId: _sensorId,
         name: _name,
         description: _desc
-    };
+    });
 
     var stream = fs.createWriteStream('./db/monitoring.json');
     stream.on('finish', function () {
