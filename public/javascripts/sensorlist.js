@@ -1,26 +1,35 @@
-//$("#btn_temperature").click ( function() { $("#title_add_sensor").text("Add Sensor"); });
-//$("#btn_humidity").click ( function() { $("#title_add_sensor").text("Add Sensor"); });
-//$("#btn_co2").click ( function() { $("#title_add_sensor").text("Add Sensor"); });
-//$("#btn_camera").click ( function() { $("#title_add_sensor").text("Add Sensor"); });
+var index=0;
+
+function setSensorInfo(_index, _edgenode, _sensor) {
+    index = _index;
+    $('#idInput').val(_edgenode);
+    $('#sensorInput').val(_sensor);
+    $('#modal_add_sensor').modal();
+}
+
+function clearInput() {
+    $('#idInput').val("");
+    $('#sensorInput').val("");
+    $('#nameInput').val("");
+    $('#descriptionInput').val("");
+}
 
 $("#btn_save_sensor").click ( function() {
-	var data = "<tr><td>1</td><td>실내온도</td><td>ON</td><td>1층 실내온도</td><td><button id='btn_edit' type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#modal_edit_sensor'>Edit</button></td></tr>";
-   	$("#table_body").append( data );
+    if ( $('#idInput').val() == "" || $('#sensorInput').val() == "" ||
+        $('#nameInput').val() == "" || $('#descriptionInput').val() == ""){
+
+        alert("input empty!");
+        return;
+    }
+    $.ajax({
+        url: "/sensorlist/savejson/" + index + "/" + $('#idInput').val() + "/" + $('#sensorInput').val() + "/" + $('#nameInput').val() + "/" + $('#descriptionInput').val(),
+        type: 'get',
+        dataType: 'text',
+        success: function (data) {
+            alert(data);
+        }
+    });
+
+    clearInput();
    	$('#modal_add_sensor').modal('hide');
 });
-
-$("#btn_delete_sensor").click ( function() {
-	$('#modal_edit_sensor').modal('hide');
-	
-	//=========== 테이블 리프레시=============
-	//========================================
-});
-
-$("#btn_edit_sensor").click ( function() {
-	$('#modal_edit_sensor').modal('hide');
-});
-
-
-// $(document).on ("click", "#btn_edit",  function() {
-	
-// });

@@ -11,3 +11,11 @@ a {
 	padding: 40px 15px;
 	text-align: center;
 }
+
+table tr th {
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
