@@ -16,7 +16,9 @@ var options = {
 router.get('/', function(req, res) {
     if ( isDEV ) {
         var json = JSON.parse(str);
-        res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs });
+        var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+        var readJson = JSON.parse(readData);
+        res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: readJson });
     } else {
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
@@ -27,9 +29,15 @@ router.get('/', function(req, res) {
     }
 });
 
-console.log(querySensorId("01010001"));
+//console.log(querySensorId("01010001"));
 function querySensorId(_id) {
     var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+    console.log("readData" + readData);
+    if (readData == "") {
+        return 1;
+    } else {
+        console.log("asdf")
+    }
     var json = JSON.parse(readData);
 
     // 쿼리
@@ -55,24 +63,36 @@ router.get('/savejson/:index/:edgenode/:sensor/:name/:desc/:sensorId?', function
 function writeMonitoringList(_index, _edgenode, _sensor, _name, _desc, _sensorId) {
 
     // 파일이 없거나 비어있으면 새로 만들기를 해야함.
-    var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
-    var json = JSON.parse(readData);
+    fs.exists('./db/monitoring.json', function (exists) {
 
-    json.push({
-        index: _index,
-        edgenode: _edgenode,
-        sensor: _sensor,
-        sensorId: _sensorId,
-        name: _name,
-        description: _desc
-    });
+        var json;
 
-    var stream = fs.createWriteStream('./db/monitoring.json');
-    stream.on('finish', function () {
-        console.log('save json');
+        if (exists) {
+            console.log("exists!");
+            var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+            json = JSON.parse(readData);
+        } else {
+            console.log("no exists!");
+            json = [];
+        }
+
+        json.push({
+            index: _index,
+            edgenode: _edgenode,
+            sensor: _sensor,
+            sensorId: _sensorId,
+            name: _name,
+            description: _desc
+        });
+
+        var stream = fs.createWriteStream('./db/monitoring.json');
+        stream.on('finish', function () {
+            console.log('save json');
+        });
+        stream.write(JSON.stringify(json));
+        stream.end();
+
     });
-    stream.write(JSON.stringify(json));
-    stream.end();
 }
 
 module.exports = router;

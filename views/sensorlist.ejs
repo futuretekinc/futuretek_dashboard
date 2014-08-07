@@ -81,12 +81,35 @@
                     <th style="width: 70px">#</th>
                     <th>Edge Node (ID)</th>
                     <th>Sensor (ID)</th>
-                    <th>Status</th>
+                    <th>Name</th>
                     <th>Discription</th>
                     <th>Config</th>
                 </tr>
                 <tbody>
-
+                <% for ( var i=0; i<monitoring.length; i++ ) { %>
+                <tr>
+                    <td>
+                        <%= Number(monitoring[i].index) + 1 %>
+                    </td>
+                    <td>
+                        <%= monitoring[i].edgenode %>
+                    </td>
+                    <td>
+                        <%= monitoring[i].sensor + " (" + monitoring[i].sensorId + ")" %>
+                    </td>
+                    <td>
+                        <%= monitoring[i].name %>
+                    </td>
+                    <td>
+                        <%= monitoring[i].description %>
+                    </td>
+                    <td>
+                        <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'>
+                            Setting
+                        </button>
+                    </td>
+                </tr>
+                <% } %>
                 </tbody>
             </table>
         </div>
