@@ -31,7 +31,7 @@
         <!-- Table -->
         <div class="table-responsive">
             <table id="table_sensor" class="table table-bordered">
-                <tr>
+                <tr class="active">
                     <th style="width: 70px">#</th>
                     <th>Edge Node (ID)</th>
                     <th>Sensor (ID)</th>
@@ -40,7 +40,11 @@
                 </tr>
                 <tbody>
                     <% for ( var i=0; i<sensors.length; i++ ) { %>
-                    <tr>
+                    <% if (test[i] == 1) { %>
+                    <tr class='warning'>
+                        <% } else { %>
+                    <tr class='success'>
+                        <% } %>
                         <td>
                             <%= i + 1 %>
                         </td>
@@ -77,7 +81,7 @@
         <!-- Table -->
         <div class="table-responsive">
             <table id="table_sensor" class="table table-bordered">
-                <tr>
+                <tr class="active">
                     <th style="width: 70px">#</th>
                     <th>Edge Node (ID)</th>
                     <th>Sensor (ID)</th>

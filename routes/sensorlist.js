@@ -15,10 +15,50 @@ var options = {
 /* GET home page. */
 router.get('/', function(req, res) {
     if ( isDEV ) {
+
+        fs.exists('./db/monitoring.json', function (exists) {
+            if (exists) {
+
+            } else {
+
+            }
+        });
+
         var json = JSON.parse(str);
         var readData = fs.readFileSync('./db/monitoring.json', 'utf-8');
         var readJson = JSON.parse(readData);
-        res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: readJson });
+        console.log(json.groups)
+        // 쿼리
+        var json2 = [];
+        if (readJson != "") {
+
+            var i = 0;
+            var monitorList = [];
+            for (i = 0; i < readJson.length; i++) {
+                monitorList.push(readJson[i]['sensorId']);
+            }
+            console.log(monitorList);
+            var test = [];
+
+            for (i = 0, l = json.groups.length; i < l; i++) {
+                test.push(0);
+            }
+            console.log("! = " + test);
+            for (var j=0; j < monitorList.length; j++) {
+                for (i = 0, l = json.groups.length; i < l; i++) {
+
+                    if (json.groups[i].objects[0].id === monitorList[j]) {
+                        console.log(json.groups[i]);
+                        test.splice(i, 1, 1);
+                    }
+                }
+            }
+            console.log(test);
+        }
+
+
+        //console.log("json2 = " + json2);
+        res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: readJson, test: test});
     } else {
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
