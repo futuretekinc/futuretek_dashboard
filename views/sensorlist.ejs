@@ -40,11 +40,8 @@
                 </tr>
                 <tbody>
                     <% for ( var i=0; i<sensors.length; i++ ) { %>
-                    <% if (test[i] == 1) { %>
-                    <tr class='warning'>
-                        <% } else { %>
-                    <tr class='success'>
-                        <% } %>
+                    <% if (status[i] == 0) { %>
+                    <tr class="warning">
                         <td>
                             <%= i + 1 %>
                         </td>
@@ -59,11 +56,12 @@
                         </td>
                         <td>
                             <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'
-                                    onClick='setSensorInfo("<%= i %>","<%= edgenode[1].value + ' (' + edgenode[0].value + ')' %>", "<%= sensors[i].name %>", "<%= sensors[i].objects[0].id %>")'>
+                                    onClick='setSensorInfo("<%= i %>","<%= edgenode[1].value %>", "<%= edgenode[0].value %>", "<%= sensors[i].name %>", "<%= sensors[i].objects[0].id %>")'>
                                 Setting
                             </button>
                         </td>
                     </tr>
+                    <% } %>
                     <% } %>
                 </tbody>
             </table>
@@ -91,7 +89,7 @@
                 </tr>
                 <tbody>
                 <% for ( var i=0; i<monitoring.length; i++ ) { %>
-                <tr>
+                <tr class="success">
                     <td>
                         <%= Number(monitoring[i].index) + 1 %>
                     </td>
@@ -108,8 +106,11 @@
                         <%= monitoring[i].description %>
                     </td>
                     <td>
-                        <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'>
-                            Setting
+                        <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'
+                                onClick='setModifySensorInfo("<%= i %>","<%= monitoring[i].edgenode %>","<%= monitoring[i].edgenodeId %>",
+                                        "<%= monitoring[i].sensor %>", "<%= monitoring[i].sensorId %>",
+                                        "<%= monitoring[i].name %>", "<%= monitoring[i].description %>")'>
+                            Modify
                         </button>
                     </td>
                 </tr>
@@ -150,6 +151,35 @@
   	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<!-- Add Sensor Setting Popup -->
+<div class="modal" id="modal_modify_sensor">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="title_add_sensor">Modify Sensor</h4>
+            </div>
+            <div class="modal-body">
+                <label>ID</label>
+                <input type="text" class="form-control" id="modify_idInput" disabled="disabled">
+                <br>
+                <label>Sensor</label>
+                <input type="text" class="form-control" id="modify_sensorInput" disabled="disabled">
+                <br>
+                <label for="nameInput">Name</label>
+                <input type="text" class="form-control" id="modify_nameInput" placeholder="Name">
+                <br>
+                <label for="descriptionInput">Description</label>
+                <input type="text" class="form-control" id="modify_descriptionInput" placeholder="Description">
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="clearInput()">Close</button>
+                <button type="button" class="btn btn-primary" id="modal_modify_sensor">Modify</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script type="text/javascript" src="javascripts/util.js"></script>
 <script type="text/javascript" src="javascripts/sensorlist.js"></script>

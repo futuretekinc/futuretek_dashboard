@@ -29,44 +29,17 @@
 </div>
 
 <div class="container">
+    <% for (var i=0; i<sensors.length; i++) { %>
 	<div class="col-sm-4">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				Temperature
+		        <%= sensors[i].name + " ( " + sensors[i].description + " )" %>
 			</div>
 			<div class="panel-body">
-				<p>Temperature Content</p>
-				<p>Temperature Content</p>
-				<p>Temperature Content</p>
-				<p>Temperature Content</p>
+				<h1>25'C</h1>
 			</div>
 		</div>
 	</div>
-	<div class="col-sm-4">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				Humidity
-			</div>
-			<div class="panel-body">
-				<p>Humidity Content</p>
-				<p>Humidity Content</p>
-				<p>Humidity Content</p>
-				<p>Humidity Content</p>
-			</div>
-		</div>
-	</div>
-	<div class="col-sm-4">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				Web Camera
-			</div>
-			<div class="panel-body">
-				<p>Web Camera Content</p>
-				<p>Web Camera Content</p>
-				<p>Web Camera Content</p>
-				<p>Web Camera Content</p>
-			</div>
-		</div>
-	</div>
+    <% } %>
 </div>
 <script type="text/javascript" src="javascripts/util.js"></script>
