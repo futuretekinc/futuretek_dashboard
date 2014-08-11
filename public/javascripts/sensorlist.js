@@ -38,7 +38,7 @@ $("#btn_save_sensor").click ( function() {
     if ( $('#idInput').val() == "" || $('#sensorInput').val() == "" ||
         $('#nameInput').val() == "" || $('#descriptionInput').val() == "") {
 
-        alert("input empty!");
+        alert("Input Empty!");
         return;
     }
     $.ajax({
@@ -53,7 +53,10 @@ $("#btn_save_sensor").click ( function() {
         type: 'get',
         dataType: 'text',
         success: function (data) {
-            alert(data);
+            if (data == "success") {
+                alert("Success Added.");
+                location.reload();
+            }
         }
     });
 
@@ -65,7 +68,7 @@ $("#btn_modify_sensor").click ( function() {
     if ( $('#modify_idInput').val() == "" || $('#modify_sensorInput').val() == "" ||
         $('#modify_nameInput').val() == "" || $('#modify_descriptionInput').val() == "") {
 
-        alert("input empty!");
+        alert("Input Empty!");
         return;
     }
     $.ajax({
@@ -80,7 +83,33 @@ $("#btn_modify_sensor").click ( function() {
         type: 'get',
         dataType: 'text',
         success: function (data) {
-            alert(data);
+            if (data == "success") {
+                alert("Success Modified.");
+                location.reload();
+            }
+        }
+    });
+
+    clearInput();
+    $('#modal_modify_sensor').modal('hide');
+});
+
+$("#btn_delete_sensor").click ( function() {
+//    if ( $('#modify_idInput').val() == "" || $('#modify_sensorInput').val() == "" ||
+//        $('#modify_nameInput').val() == "" || $('#modify_descriptionInput').val() == "") {
+//
+//        alert("input empty!");
+//        return;
+//    }
+    $.ajax({
+        url: "/sensorlist/deletejson/" + index,
+        type: 'get',
+        dataType: 'text',
+        success: function (data) {
+            if (data == "success") {
+                alert("Success Removed.");
+                location.reload();
+            }
         }
     });
 
