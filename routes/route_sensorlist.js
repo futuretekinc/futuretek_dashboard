@@ -2,7 +2,7 @@ var express = require('express');
 var request = require('request');
 var fs = require('fs');
 var router = express.Router();
-var isDEV = true;
+var isDEV = false;
 
 var DEFINE_MONITOR_STATUS_OFF = 0,
     DEFINE_MONITOR_STATUS_ON = 1;
@@ -23,7 +23,6 @@ router.get('/', function(req, res) {
         var monitorStatus = [];
         for (var i = 0, l = json.groups.length; i < l; i++) {
             monitorStatus.push(DEFINE_MONITOR_STATUS_OFF);
-
         }
 
         // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
@@ -36,17 +35,17 @@ router.get('/', function(req, res) {
                 // 쿼리
                 if (readMonitoringData != "") {
                     monitorList = JSON.parse(readMonitoringData);
-                    console.log(monitorStatus);
+                    //console.log(monitorStatus);
                     for (var j=0; j < monitorList.length; j++) {
                         for (var i = 0, l = json.groups.length; i < l; i++) {
 
                             if (json.groups[i].objects[0].id === monitorList[j]['sensorId']) {
-                                console.log(json.groups[i]);
+                                //console.log(json.groups[i]);
                                 monitorStatus.splice(i, 1, 1);
                             }
                         }
                     }
-                    console.log(monitorStatus);
+                    //console.log(monitorStatus);
                 }
 
                 res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: monitorList, status: monitorStatus});
@@ -60,7 +59,41 @@ router.get('/', function(req, res) {
         request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
                 var json = JSON.parse(body);
-                res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs });
+                console.log(json);
+                var monitorStatus = [];
+                for (var i = 0, l = json.groups.length; i < l; i++) {
+                    monitorStatus.push(DEFINE_MONITOR_STATUS_OFF);
+
+                }
+
+                // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
+                var monitorList="";
+                fs.exists('./db/monitoring.json', function (exists) {
+                    if (exists) {
+                        // 현재 모니터링 하고 있는 센서 리스트를 가져온다.
+                        var readMonitoringData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+
+                        // 쿼리
+                        if (readMonitoringData != "") {
+                            monitorList = JSON.parse(readMonitoringData);
+                            //console.log(monitorStatus);
+                            for (var j=0; j < monitorList.length; j++) {
+                                for (var i = 0, l = json.groups.length; i < l; i++) {
+
+                                    if (json.groups[i].objects[0].id === monitorList[j]['sensorId']) {
+                                        console.log(json.groups[i]);
+                                        monitorStatus.splice(i, 1, 1);
+                                    }
+                                }
+                            }
+                            //console.log(monitorStatus);
+                        }
+
+                        res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: monitorList, status: monitorStatus});
+                    } else {
+                        res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: monitorList, status: monitorStatus});
+                    }
+                });
             }
         });
     }
@@ -137,7 +170,7 @@ function writeMonitoringList(_index, _edgenode, _sensor, _name, _desc, _sensorId
         if (_ismodify == "modify") {
             for (var i = 0; i < json.length; i++) {
                 if (json[i].index === _index) {
-                    console.log(i);
+                    //console.log(i);
                     json.splice(i, 1, make_json);
                 }
             }

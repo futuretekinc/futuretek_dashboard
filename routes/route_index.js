@@ -1,5 +1,6 @@
 var express = require('express');
 var fs = require('fs');
+var snmp = require('net-snmp');
 var router = express.Router();
 
 /* GET home page. */
@@ -20,8 +21,7 @@ router.get('/', function(req, res) {
 
             res.render('index', { title: 'Dashboard', sensors: monitorList});
         } else {
-            //res.render('sensorlist', { title: 'Dashboard - Sensor list', sensors: json.groups, edgenode: json.product_info.descs, monitoring: monitorList, status: monitorStatus});
-            res.render('index', { title: 'Dashboard' });
+            res.render('index', { title: 'Dashboard', sensors: monitorList});
         }
     });
 });
