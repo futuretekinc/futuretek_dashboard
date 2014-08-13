@@ -39,9 +39,16 @@
                     <th>Monitoring</th>
                 </tr>
                 <tbody>
+                <!-- sensors: json.groups, edgenode: json.product_info.descs, monitoring: monitorList, status: monitorStatus -->
                     <% var index = 1 %>
+                    <% for ( var p=0; p<edgenodes.length; p++ ) { %>
+                    <% var sensors = edgenodes[p][0].groups %>
+                    <% var status = edgenodes[p][2] %>
+                    <% var edgenode = edgenodes[p][0].product_info.descs %>
+
                     <% for ( var i=0; i<sensors.length; i++ ) { %>
-                    <% if (status[i] == 0) { %>
+                    <% for ( var j=0; j<sensors[i].objects.length; j++ ) { %>
+                    <% if (status[i][j] == 0) { %>
                     <tr class="warning">
                         <td>
                             <%= index++ %>
@@ -50,18 +57,20 @@
                             <%= edgenode[1].value + " (" + edgenode[0].value + ")" %>
                         </td>
                         <td>
-                            <%= sensors[i].name + " (" + sensors[i].objects[0].id + ")" %>
+                            <%= sensors[i].name + " (" + sensors[i].objects[j].id + ")" %>
                         </td>
                         <td>
-                            <%= sensors[i].objects[0].status %>
+                            <%= sensors[i].objects[j].status %>
                         </td>
                         <td>
-                            <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'
-                                    onClick='setSensorInfo("<%= i %>","<%= edgenode[1].value %>", "<%= edgenode[0].value %>", "<%= sensors[i].name %>", "<%= sensors[i].objects[0].id %>")'>
+                            <button id='btn_config' type='button' class='btn btn-primary btn-xs'
+                                    onClick='setSensorInfo("<%= edgenode[1].value %>", "<%= edgenode[0].value %>", "<%= sensors[i].name %>", "<%= sensors[i].objects[j].id %>")'>
                                 Setting
                             </button>
                         </td>
                     </tr>
+                    <% } %>
+                    <% } %>
                     <% } %>
                     <% } %>
                 </tbody>
@@ -89,6 +98,8 @@
                     <th>Config</th>
                 </tr>
                 <tbody>
+                <% for ( var p=0; p<edgenodes.length; p++ ) { %>
+                <% var monitoring = edgenodes[p][1] %>
                 <% for ( var i=0; i<monitoring.length; i++ ) { %>
                 <tr class="success">
                     <td>
@@ -107,14 +118,15 @@
                         <%= monitoring[i].description %>
                     </td>
                     <td>
-                        <button id=<%='btn_config_' + i %> type='button' class='btn btn-primary btn-xs'
-                                onClick='setModifySensorInfo("<%= monitoring[i].index %>","<%= monitoring[i].edgenode %>","<%= monitoring[i].edgenodeId %>",
+                        <button id='btn_config' type='button' class='btn btn-primary btn-xs'
+                                onClick='setModifySensorInfo("<%= monitoring[i].edgenode %>","<%= monitoring[i].edgenodeId %>",
                                         "<%= monitoring[i].sensor %>", "<%= monitoring[i].sensorId %>",
                                         "<%= monitoring[i].name %>", "<%= monitoring[i].description %>")'>
                             Modify
                         </button>
                     </td>
                 </tr>
+                <% } %>
                 <% } %>
                 </tbody>
             </table>

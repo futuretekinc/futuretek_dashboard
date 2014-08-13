@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/route_index');
 var sensorlist = require('./routes/route_sensorlist');
-var discovery = require('./routes/route_discovery');
 
 var app = express();
 

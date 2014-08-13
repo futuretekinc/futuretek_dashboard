@@ -1,6 +1,8 @@
 var express = require('express');
 var fs = require('fs');
 var snmp = require('net-snmp');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 var router = express.Router();
 
 /* GET home page. */
@@ -25,5 +27,21 @@ router.get('/', function(req, res) {
         }
     });
 });
+
+/*
+var PushSensor = function () {
+    var self = this;
+    setInterval( function() {
+        self.emit('push');
+    }, 1000);
+};
+util.inherits(PushSensor, EventEmitter);
+
+var pushSensor = new PushSensor();
+pushSensor.on('push', function () {
+    //snmp.push();
+    console.log("loop");
+});
+*/
 
 module.exports = router;

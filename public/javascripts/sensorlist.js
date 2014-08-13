@@ -1,9 +1,8 @@
-var index=0;
+//var index=0;
 var sensorId;
 var edgenodeId;
 
-function setSensorInfo(_index, _edgenode, _edgenodeId, _sensor, _sensorId) {
-    index = _index;
+function setSensorInfo(_edgenode, _edgenodeId, _sensor, _sensorId) {
     sensorId = _sensorId;
     edgenodeId = _edgenodeId;
     $('#idInput').val(_edgenode + " (" + _edgenodeId + ")");
@@ -11,8 +10,7 @@ function setSensorInfo(_index, _edgenode, _edgenodeId, _sensor, _sensorId) {
     $('#modal_add_sensor').modal();
 }
 
-function setModifySensorInfo(_index, _edgenode, _edgenodeId, _sensor, _sensorId, _name, _desc) {
-    index = _index;
+function setModifySensorInfo(_edgenode, _edgenodeId, _sensor, _sensorId, _name, _desc) {
     sensorId = _sensorId;
     edgenodeId = _edgenodeId;
     $('#modify_idInput').val(_edgenode);
@@ -42,7 +40,7 @@ $("#btn_save_sensor").click ( function() {
         return;
     }
     $.ajax({
-        url: "/sensorlist/savejson/" + index
+        url: "/sensorlist/savejson"
             + "/" + $('#idInput').val()
             + "/" + $('#sensorInput').val()
             + "/" + $('#nameInput').val()
@@ -72,7 +70,7 @@ $("#btn_modify_sensor").click ( function() {
         return;
     }
     $.ajax({
-        url: "/sensorlist/savejson/" + index
+        url: "/sensorlist/savejson"
             + "/" + $('#modify_idInput').val()
             + "/" + $('#modify_sensorInput').val()
             + "/" + $('#modify_nameInput').val()
@@ -102,7 +100,7 @@ $("#btn_delete_sensor").click ( function() {
 //        return;
 //    }
     $.ajax({
-        url: "/sensorlist/deletejson/" + index,
+        url: "/sensorlist/deletejson/" + sensorId,
         type: 'get',
         dataType: 'text',
         success: function (data) {
