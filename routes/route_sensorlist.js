@@ -210,15 +210,16 @@ router.get('/', function(req, res) {
     }
 });
 
-router.get('/savejson/:edgenode/:sensor/:name/:desc/:sensorId/:edgenodeId/:ismodify?', function(req, res) {
+router.get('/savejson/:edgenode/:sensor/:name/:desc/:sensorId/:edgenodeId/:edgenodeIP/:sensorIndex/:ismodify?', function(req, res) {
     if (req.params.edgenode == undefined || req.params.sensor == undefined ||
         req.params.name == undefined || req.params.desc == undefined ||
         req.params.sensorId == undefined || req.params.edgenodeId == undefined ||
-        req.params.ismodify == undefined) {
+        req.params.ismodify == undefined || req.params.edgenodeIP == undefined ||
+        req.params.sensorIndex == undefined) {
         res.send('fail');
     } else {
         res.send("success");
-        writeMonitoringList(req.params.edgenode, req.params.sensor, req.params.name, req.params.desc, req.params.sensorId, req.params.edgenodeId, req.params.ismodify);
+        writeMonitoringList(req.params.edgenode, req.params.sensor, req.params.name, req.params.desc, req.params.sensorId, req.params.edgenodeId, req.params.edgenodeIP, req.params.sensorIndex, req.params.ismodify);
     }
 });
 
@@ -248,7 +249,7 @@ router.get('/deletejson/:sensorId?', function(req, res) {
     stream.end();
 });
 
-function writeMonitoringList(_edgenode, _sensor, _name, _desc, _sensorId, _edgenodeId, _ismodify) {
+function writeMonitoringList(_edgenode, _sensor, _name, _desc, _sensorId, _edgenodeId, _edgenodeIP, _sensorIndex, _ismodify) {
 
     // 파일이 없거나 비어있으면 새로 만들기를 해야함.
     fs.exists('./db/monitoring.json', function (exists) {
@@ -270,8 +271,10 @@ function writeMonitoringList(_edgenode, _sensor, _name, _desc, _sensorId, _edgen
         var make_json = {
             edgenode: _edgenode,
             edgenodeId: _edgenodeId,
+            edgenodeIP: _edgenodeIP,
             sensor: _sensor,
             sensorId: _sensorId,
+            sensorIndex: _sensorIndex,
             name: _name,
             description: _desc
         };

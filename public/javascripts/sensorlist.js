@@ -1,18 +1,24 @@
 //var index=0;
 var sensorId;
 var edgenodeId;
+var edgenodeIP;
+var sensorIndex;
 
-function setSensorInfo(_edgenode, _edgenodeId, _sensor, _sensorId) {
+function setSensorInfo(_edgenode, _edgenodeId, _sensor, _sensorId, _ip, _sensorIndex) {
     sensorId = _sensorId;
     edgenodeId = _edgenodeId;
+    edgenodeIP = _ip;
+    sensorIndex = _sensorIndex;
     $('#idInput').val(_edgenode + " (" + _edgenodeId + ")");
     $('#sensorInput').val(_sensor);
     $('#modal_add_sensor').modal();
 }
 
-function setModifySensorInfo(_edgenode, _edgenodeId, _sensor, _sensorId, _name, _desc) {
+function setModifySensorInfo(_edgenode, _edgenodeId, _sensor, _sensorId, _name, _desc, _ip, _sensorIndex) {
     sensorId = _sensorId;
     edgenodeId = _edgenodeId;
+    edgenodeIP = _ip;
+    sensorIndex = _sensorIndex;
     $('#modify_idInput').val(_edgenode);
     $('#modify_sensorInput').val(_sensor);
     $('#modify_nameInput').val(_name);
@@ -47,6 +53,8 @@ $("#btn_save_sensor").click ( function() {
             + "/" + $('#descriptionInput').val()
             + "/" + sensorId
             + "/" + edgenodeId
+            + "/" + edgenodeIP
+            + "/" + sensorIndex
             + "/add",
         type: 'get',
         dataType: 'text',
@@ -77,6 +85,8 @@ $("#btn_modify_sensor").click ( function() {
             + "/" + $('#modify_descriptionInput').val()
             + "/" + sensorId
             + "/" + edgenodeId
+            + "/" + edgenodeIP
+            + "/" + sensorIndex
             + "/modify",
         type: 'get',
         dataType: 'text',
