@@ -3,14 +3,6 @@ var request = require('request');
 var fs = require('fs');
 var discovery = require('./route_discovery');
 var async = require('async');
-
-var edgeNodeUrls=[];
-discovery.getSensorValue();
-discovery.discover.on('getIps', function(_data) {
-    console.log(_data);
-    edgeNodeUrls.push(_data);
-});
-
 var router = express.Router();
 var isDEV = false;
 
@@ -63,6 +55,7 @@ var str = {
     ]
 };
 
+/*
 var options = [{
     url: 'http://10.0.1.43/request.cgi?cmd=view&page=status',
     method: 'GET'
@@ -71,64 +64,8 @@ var options = [{
     url: 'http://10.0.1.46/request.cgi?cmd=view&page=status',
     method: 'GET'
 }];
+*/
 
-function test()
-{
-    var edgenodes = [];
-    async.waterfall([
-        function (cb) {
-            for (var y=0; y<2; y++) {
-                // 센서 리스트를 가져온다.
-                var json = str;
-
-                var monitorStatus = [];
-                for (var i = 0; i < json.groups.length; i++) {
-                    monitorStatus[i] = [];
-                    for (var k = 0; k < json.groups[i].objects.length; k++) {
-                        monitorStatus[i].push(0);
-                    }
-                }
-
-                // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
-                var monitorList = "";
-                fs.exists('./db/monitoring.json', function (exists) {
-                    if (exists) {
-                        // 현재 모니터링 하고 있는 센서 리스트를 가져온다.
-                        var readMonitoringData = fs.readFileSync('./db/monitoring.json', 'utf-8');
-
-                        // 쿼리
-                        if (readMonitoringData != "") {
-                            monitorList = JSON.parse(readMonitoringData);
-                            //console.log(monitorStatus);
-                            for (var j = 0; j < monitorList.length; j++) {
-                                for (var i = 0, l = json.groups.length; i < l; i++) {
-                                    for (var k = 0, h = json.groups[i].objects.length; k < h; k++) {
-                                        //console.log(monitorList[j]['sensorId']);
-                                        if (json.groups[i].objects[k].id === monitorList[j]['sensorId']) {
-                                            //console.log(monitorStatus[i]);
-                                            monitorStatus[i].splice(k, 1, 1);
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-                        cb(null, [json, monitorList, monitorStatus]);
-                    } else {
-                        cb(null, [json, monitorList, monitorStatus]);
-                    }
-                });
-            }
-
-        },
-        function (data, cb) {
-            edgenodes.push(data);
-            console.log(edgenodes);
-        }
-    ]);
-}
-//test();
 /* GET home page. */
 router.get('/', function(req, res) {
     if ( isDEV ) {
@@ -194,8 +131,23 @@ router.get('/', function(req, res) {
     } else {
 
         var edgenodes = [];
+        var options = [];
         async.waterfall([
             function (cb) {
+                discovery.getSensorValue();
+                discovery.discover.on('getIps', function(_data) {
+                    //console.log(_data);
+                    options.push({
+                        url: 'http://'+ _data +'/request.cgi?cmd=view&page=status',
+                        method: 'GET'
+                    });
+                });
+                setTimeout(function() {
+                    cb(null, options);
+                    console.log(options);
+                }, 1000);
+            },
+            function (options, cb) {
                 for (var y = 0; y < options.length; y++) {
                     request(options[y], function (error, response, body) {
                         if (!error && response.statusCode == 200) {
@@ -211,7 +163,7 @@ router.get('/', function(req, res) {
                             console.log("init monitorStatus = " + monitorStatus);
 
                             // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
-                            var monitorList = "";
+                            var monitorJson = "";
                             fs.exists('./db/monitoring.json', function (exists) {
                                 if (exists) {
                                     // 현재 모니터링 하고 있는 센서 리스트를 가져온다.
@@ -219,13 +171,14 @@ router.get('/', function(req, res) {
 
                                     // 쿼리
                                     if (readMonitoringData != "") {
-                                        monitorList = JSON.parse(readMonitoringData);
+                                        monitorJson = JSON.parse(readMonitoringData);
                                         //console.log(monitorStatus);
-                                        for (var j = 0; j < monitorList.length; j++) {
+                                        for (var j = 0; j < monitorJson.length; j++) {
                                             for (var i = 0, l = json.groups.length; i < l; i++) {
                                                 for (var k = 0, h = json.groups[i].objects.length; k < h; k++) {
                                                     //console.log(monitorList[j]['sensorId']);
-                                                    if (json.groups[i].objects[k].id === monitorList[j]['sensorId']) {
+                                                    if (json.groups[i].objects[k].id === monitorJson[j]['sensorId'] &&
+                                                        json.product_info.descs[0].value === monitorJson[j]['edgenodeId']) {
                                                         //console.log(monitorStatus[i]);
                                                         monitorStatus[i].splice(k, 1, 1);
                                                     }
@@ -234,15 +187,15 @@ router.get('/', function(req, res) {
                                         }
 
                                     }
-                                    //console.log(monitorStatus);
-                                    edgenodes.push([json, monitorList, monitorStatus]);
+                                    console.log("monitorStatus = " + monitorStatus);
+                                    edgenodes.push([json, monitorStatus]);
                                     if (edgenodes.length == 2) {
-                                        cb(null, edgenodes);
+                                        cb(null, edgenodes, monitorJson);
                                     }
                                 } else {
-                                    edgenodes.push([json, monitorList, monitorStatus]);
+                                    edgenodes.push([json, monitorStatus]);
                                     if (edgenodes.length == 2) {
-                                        cb(null, edgenodes);
+                                        cb(null, edgenodes, monitorJson);
                                     }
                                 }
                             });
@@ -250,8 +203,8 @@ router.get('/', function(req, res) {
                     });
                 }
             },
-            function (data, cb) {
-                res.render('sensorlist', { title: 'Dashboard - Sensor list', edgenodes: data });
+            function (data, list, cb) {
+                res.render('sensorlist', { title: 'Dashboard - Sensor list', edgenodes: data, list:list});
             }
         ])
     }

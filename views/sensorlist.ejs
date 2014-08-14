@@ -39,13 +39,11 @@
                     <th>Monitoring</th>
                 </tr>
                 <tbody>
-                <!-- sensors: json.groups, edgenode: json.product_info.descs, monitoring: monitorList, status: monitorStatus -->
                     <% var index = 1 %>
                     <% for ( var p=0; p<edgenodes.length; p++ ) { %>
                     <% var sensors = edgenodes[p][0].groups %>
-                    <% var status = edgenodes[p][2] %>
+                    <% var status = edgenodes[p][1] %>
                     <% var edgenode = edgenodes[p][0].product_info.descs %>
-
                     <% for ( var i=0; i<sensors.length; i++ ) { %>
                     <% for ( var j=0; j<sensors[i].objects.length; j++ ) { %>
                     <% if (status[i][j] == 0) { %>
@@ -98,8 +96,7 @@
                     <th>Config</th>
                 </tr>
                 <tbody>
-                <% for ( var p=0; p<edgenodes.length; p++ ) { %>
-                <% var monitoring = edgenodes[p][1] %>
+                <% var monitoring = list %>
                 <% for ( var i=0; i<monitoring.length; i++ ) { %>
                 <tr class="success">
                     <td>
@@ -126,7 +123,6 @@
                         </button>
                     </td>
                 </tr>
-                <% } %>
                 <% } %>
                 </tbody>
             </table>
