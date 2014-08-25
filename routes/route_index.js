@@ -20,6 +20,10 @@ router.get('/', function(req, res) {
                 monitorList = JSON.parse(readMonitoringData);
                 console.log(monitorList);
             }
+            for (var i = 0; i < monitorList.length; i++) {
+                console.log(monitorList[i].edgenodeIP);
+                console.log(getOID(monitorList[i].sensor, Number(monitorList[i].sensorIndex) + 1));
+            }
 
             res.render('index', { title: 'Dashboard', sensors: monitorList});
         } else {
@@ -27,6 +31,58 @@ router.get('/', function(req, res) {
         }
     });
 });
+
+function getOID(_sensorName, _index) {
+
+    var oid;
+    switch (_sensorName) {
+        case 'PT100' :
+            oid = '1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index;
+            break;
+        case 'DS18B20' :
+            oid = '1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index;
+            break;
+        case 'SHT' :
+            oid = '1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index;
+            break;
+        case 'DI' :
+            oid = '' + _index;
+            break;
+        case 'DO' :
+            oid = '' + _index;
+            break;
+    }
+    return oid;
+}
+
+var session = snmp.createSession('10.0.1.43', 'public');
+var oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.1'];
+
+session.get(oids, function (error, varbinds) {
+    if (error) {
+        console.log(error);
+    } else {
+        for (var i = 0; i < varbinds.length; i++) {
+            if (snmp.isVarbindError(varbinds[i])) {
+                console.error(snmp.varbindError(varbinds[i]));
+            } else {
+                console.log("ip : " + varbinds[i].oid + " = " + varbinds[i].value);
+            }
+        }
+    }
+});
+
+var temperature_oids = [
+    '1.3.6.1.4.1.42251.1.3.2.3.1.0',
+    '1.3.6.1.4.1.42251.1.3.2.3.2.1.1',
+    '1.3.6.1.4.1.42251.1.3.2.3.2.1.6'
+];
+
+var humidity_oids = [
+    '1.3.6.1.4.1.42251.1.3.2.4.1.0',
+    '1.3.6.1.4.1.42251.1.3.2.4.2.2.1',
+    '1.3.6.1.4.1.42251.1.3.2.4.2.1.6'
+];
 
 /*
 var PushSensor = function () {

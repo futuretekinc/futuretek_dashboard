@@ -136,7 +136,6 @@ router.get('/', function(req, res) {
             function (cb) {
                 discovery.getSensorValue();
                 discovery.discover.on('getIps', function(_data) {
-                    //console.log(_data);
                     options.push({
                         url: 'http://'+ _data +'/request.cgi?cmd=view&page=status',
                         method: 'GET'
@@ -144,15 +143,18 @@ router.get('/', function(req, res) {
                 });
                 setTimeout(function() {
                     cb(null, options);
-                    console.log(options);
-                }, 1000);
+                    //console.log(options);
+                }, 100);
             },
             function (options, cb) {
+                console.log(options);
+                console.log("ip length = " + options.length);
                 for (var y = 0; y < options.length; y++) {
                     request(options[y], function (error, response, body) {
                         if (!error && response.statusCode == 200) {
                             var json = JSON.parse(body);
-
+                            console.log("==========================================================");
+                            console.log(json);
                             var monitorStatus = [];
                             for (var i = 0; i < json.groups.length; i++) {
                                 monitorStatus[i] = [];
@@ -189,16 +191,18 @@ router.get('/', function(req, res) {
                                     }
                                     console.log("monitorStatus = " + monitorStatus);
                                     edgenodes.push([json, monitorStatus]);
-                                    if (edgenodes.length == 2) {
+                                    if (edgenodes.length == options.length) {
                                         cb(null, edgenodes, monitorJson);
                                     }
                                 } else {
                                     edgenodes.push([json, monitorStatus]);
-                                    if (edgenodes.length == 2) {
+                                    if (edgenodes.length == options.length) {
                                         cb(null, edgenodes, monitorJson);
                                     }
                                 }
                             });
+                        } else {
+                            console.log("error");
                         }
                     });
                 }
