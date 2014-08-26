@@ -149,62 +149,67 @@ router.get('/', function(req, res) {
             function (options, cb) {
                 console.log(options);
                 console.log("ip length = " + options.length);
-                for (var y = 0; y < options.length; y++) {
-                    request(options[y], function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            var json = JSON.parse(body);
-                            console.log("==========================================================");
-                            console.log(json);
-                            var monitorStatus = [];
-                            for (var i = 0; i < json.groups.length; i++) {
-                                monitorStatus[i] = [];
-                                for (var k = 0; k < json.groups[i].objects.length; k++) {
-                                    monitorStatus[i].push(0);
+                if (options.length > 0) {
+                    for (var y = 0; y < options.length; y++) {
+                        request(options[y], function (error, response, body) {
+                            if (!error && response.statusCode == 200) {
+                                var json = JSON.parse(body);
+                                console.log("==========================================================");
+                                console.log(json);
+                                var monitorStatus = [];
+                                for (var i = 0; i < json.groups.length; i++) {
+                                    monitorStatus[i] = [];
+                                    for (var k = 0; k < json.groups[i].objects.length; k++) {
+                                        monitorStatus[i].push(0);
+                                    }
                                 }
-                            }
-                            console.log("init monitorStatus = " + monitorStatus);
+                                console.log("init monitorStatus = " + monitorStatus);
 
-                            // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
-                            var monitorJson = "";
-                            fs.exists('./db/monitoring.json', function (exists) {
-                                if (exists) {
-                                    // 현재 모니터링 하고 있는 센서 리스트를 가져온다.
-                                    var readMonitoringData = fs.readFileSync('./db/monitoring.json', 'utf-8');
+                                // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
+                                var monitorJson = "";
+                                fs.exists('./db/monitoring.json', function (exists) {
+                                    if (exists) {
+                                        // 현재 모니터링 하고 있는 센서 리스트를 가져온다.
+                                        var readMonitoringData = fs.readFileSync('./db/monitoring.json', 'utf-8');
 
-                                    // 쿼리
-                                    if (readMonitoringData != "") {
-                                        monitorJson = JSON.parse(readMonitoringData);
-                                        //console.log(monitorStatus);
-                                        for (var j = 0; j < monitorJson.length; j++) {
-                                            for (var i = 0, l = json.groups.length; i < l; i++) {
-                                                for (var k = 0, h = json.groups[i].objects.length; k < h; k++) {
-                                                    //console.log(monitorList[j]['sensorId']);
-                                                    if (json.groups[i].objects[k].id === monitorJson[j]['sensorId'] &&
-                                                        json.product_info.descs[0].value === monitorJson[j]['edgenodeId']) {
-                                                        //console.log(monitorStatus[i]);
-                                                        monitorStatus[i].splice(k, 1, 1);
+                                        // 쿼리
+                                        if (readMonitoringData != "") {
+                                            monitorJson = JSON.parse(readMonitoringData);
+                                            //console.log(monitorStatus);
+                                            for (var j = 0; j < monitorJson.length; j++) {
+                                                for (var i = 0, l = json.groups.length; i < l; i++) {
+                                                    for (var k = 0, h = json.groups[i].objects.length; k < h; k++) {
+                                                        //console.log(monitorList[j]['sensorId']);
+                                                        if (json.groups[i].objects[k].id === monitorJson[j]['sensorId'] &&
+                                                            json.product_info.descs[0].value === monitorJson[j]['edgenodeId']) {
+                                                            //console.log(monitorStatus[i]);
+                                                            monitorStatus[i].splice(k, 1, 1);
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
+                                        }
+                                        console.log("monitorStatus = " + monitorStatus);
+                                        edgenodes.push([json, monitorStatus]);
+                                        if (edgenodes.length == options.length) {
+                                            cb(null, edgenodes, monitorJson);
+                                        }
+                                    } else {
+                                        edgenodes.push([json, monitorStatus]);
+                                        if (edgenodes.length == options.length) {
+                                            cb(null, edgenodes, monitorJson);
+                                        }
                                     }
-                                    console.log("monitorStatus = " + monitorStatus);
-                                    edgenodes.push([json, monitorStatus]);
-                                    if (edgenodes.length == options.length) {
-                                        cb(null, edgenodes, monitorJson);
-                                    }
-                                } else {
-                                    edgenodes.push([json, monitorStatus]);
-                                    if (edgenodes.length == options.length) {
-                                        cb(null, edgenodes, monitorJson);
-                                    }
-                                }
-                            });
-                        } else {
-                            console.log("error");
-                        }
-                    });
+                                });
+                            } else {
+                                console.log("error");
+                            }
+                        });
+                    }
+                } else {
+                    var monitorJson = "";
+                    cb(null, edgenodes, monitorJson);
                 }
             },
             function (data, list, cb) {

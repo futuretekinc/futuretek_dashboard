@@ -110,7 +110,7 @@ myclass.on('getSensorData', function (_data) {
     ]);
 });
 
-myclass.emit('getSensorData', '10.0.1.46');
+//myclass.emit('getSensorData', '10.0.1.46');
 
 module.exports = router;
 module.exports.getSensorValue = getSensorValue;

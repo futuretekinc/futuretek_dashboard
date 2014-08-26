@@ -54,7 +54,7 @@ function getOID(_sensorName, _index) {
     }
     return oid;
 }
-
+/*
 var session = snmp.createSession('10.0.1.43', 'public');
 var oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.1'];
 
@@ -83,7 +83,7 @@ var humidity_oids = [
     '1.3.6.1.4.1.42251.1.3.2.4.2.2.1',
     '1.3.6.1.4.1.42251.1.3.2.4.2.1.6'
 ];
-
+*/
 /*
 var PushSensor = function () {
     var self = this;
