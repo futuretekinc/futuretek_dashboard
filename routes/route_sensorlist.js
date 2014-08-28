@@ -144,7 +144,7 @@ router.get('/', function(req, res) {
                 setTimeout(function() {
                     cb(null, options);
                     //console.log(options);
-                }, 100);
+                }, 1000);
             },
             function (options, cb) {
                 console.log(options);

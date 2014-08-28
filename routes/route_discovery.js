@@ -23,7 +23,7 @@ server.on('message', function (message, remote) {
 server.bind(162);
 
 var SEND_PORT = 1234;
-var SEND_HOST = '10.0.1.255';
+var SEND_HOST = '10.0.1.27';
 var message = new Buffer('Hello?');
 
 //discovery.on('getIps', function(_iplist){
@@ -42,6 +42,7 @@ function getSensorValue() {
     });
 }
 
+/*
 var DEFINE_COUNT = 0,
     DEFINE_ID = 1,
     DEFINE_VALUE = 2;
@@ -111,6 +112,7 @@ myclass.on('getSensorData', function (_data) {
 });
 
 //myclass.emit('getSensorData', '10.0.1.46');
+*/
 
 module.exports = router;
 module.exports.getSensorValue = getSensorValue;
