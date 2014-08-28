@@ -59,9 +59,17 @@ function test() {
                                 console.log("DI =============================================================");
                                 createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_DOOR);
                                 break;
-                            case "DO" :
-                                console.log("DO =============================================================");
-                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_FLOODING);
+//                            case "DO" :
+//                                console.log("DO =============================================================");
+//                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_FLOODING);
+//                                break;
+                            case "DS18B20" :
+                                console.log("DS18B20 =============================================================");
+                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_TEMPERATURE);
+                                break;
+                            case "SHT" :
+                                console.log("SHT =============================================================");
+                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_HUMIDITY);
                                 break;
                         }
 
@@ -81,24 +89,24 @@ router.get('/', function(req, res) {
 });
 
 function getOID(_sensorName, _index) {
-    // [센서값, 센서타입, 센서아이디]
+    // [센서값, 센서타입, 센서아이디, 엣지노드맥어드래스]
     var oids;
     switch (_sensorName) {
-        case 'PT100' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '' + _index, '' + _index];
-            break;
+//        case 'PT100' :
+//            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '' + _index, '' + _index];
+//            break;
         case 'DS18B20' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.2.' + _index, '' + _index];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.1' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
             break;
         case 'SHT' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.2.' + _index, '' + _index];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.1' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
             break;
         case 'DI' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.2.2.1.7.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.1.' + _index];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.2.2.1.7.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.1.' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
             break;
-        case 'DO' :
-            oids = ['1.3.6.1.4.1.42251.1.3.3.2.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.3.2.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.3.2.2.1.1.' + _index];
-            break;
+//        case 'DO' :
+//            oids = ['1.3.6.1.4.1.42251.1.3.3.2.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.3.2.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.3.2.2.1.1.' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
+//            break;
     }
     return oids;
 }
@@ -118,10 +126,10 @@ function createStream( _value, _index )
             defaultURL += 'SensorID=00405C8DEF0101010002&sensorType=2&recordTime=' + date;
             valueFileNamePath = "./db/humidity.txt";
             break;
-        case DEFINE_SENSOR_TYPE_FLOODING :
-            defaultURL += 'SensorID=00405C8DEF0101010003&sensorType=3&recordTime=' + date;
-            valueFileNamePath = "./db/flooding.txt";
-            break;
+//        case DEFINE_SENSOR_TYPE_FLOODING :
+//            defaultURL += 'SensorID=00405C8DEF0101010003&sensorType=3&recordTime=' + date;
+//            valueFileNamePath = "./db/flooding.txt";
+//            break;
         case DEFINE_SENSOR_TYPE_DOOR :
             defaultURL += 'SensorID=00405C8DEF0101010004&sensorType=4&recordTime=' + date;
             valueFileNamePath = "./db/door.txt";
@@ -155,7 +163,7 @@ var PushSensor = function () {
     var self = this;
     setInterval( function() {
         self.emit('push');
-    }, 60000);
+    }, 30000);
 };
 util.inherits(PushSensor, EventEmitter);
 
