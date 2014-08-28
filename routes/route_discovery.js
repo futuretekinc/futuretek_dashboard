@@ -23,7 +23,7 @@ server.on('message', function (message, remote) {
 server.bind(162);
 
 var SEND_PORT = 1234;
-var SEND_HOST = '10.0.1.27';
+var SEND_HOST = '192.168.2.255';
 var message = new Buffer('Hello?');
 
 //discovery.on('getIps', function(_iplist){
