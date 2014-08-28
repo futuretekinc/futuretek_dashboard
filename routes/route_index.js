@@ -24,7 +24,7 @@ function getDate() {
 
 // 현재 모니터링 하고 있는 센서들이 있는지 여부를 확인한다.
 var monitorList = "";
-function test() {
+function sendSensorValues() {
     fs.exists('./db/monitoring.json', function (exists) {
         if (exists) {
             // 현재 모니터링 하고 있는 센서 리스트를 가져온다.
@@ -40,7 +40,7 @@ function test() {
                 console.log(getOID(monitorList[i].sensor, Number(monitorList[i].sensorIndex) + 1));
 
                 var session = snmp.createSession(monitorList[i].edgenodeIP, 'public');
-                var oids = getOID(monitorList[i].sensor, Number(monitorList[i].sensorIndex) + 1);
+                var oids = getOID(monitorList[i].sensor, monitorList[i].sensorId.slice(7));
 
                 session.get(oids, function (error, varbinds) {
                     if (error) {
@@ -54,22 +54,23 @@ function test() {
 //                            }
 //                        }
                         //console.log(String(varbinds[1].value));
+                        //console.log (String(varbinds[2].value), String(varbinds[3].value));
                         switch (String(varbinds[1].value)) {
                             case "DI" :
                                 console.log("DI =============================================================");
-                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_DOOR);
+                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_DOOR, String(varbinds[2].value));
                                 break;
 //                            case "DO" :
 //                                console.log("DO =============================================================");
-//                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_FLOODING);
+//                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_FLOODING, String(varbinds[2].value));
 //                                break;
                             case "DS18B20" :
                                 console.log("DS18B20 =============================================================");
-                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_TEMPERATURE);
+                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_TEMPERATURE, String(varbinds[2].value));
                                 break;
                             case "SHT" :
                                 console.log("SHT =============================================================");
-                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_HUMIDITY);
+                                createStream(varbinds[0].value, DEFINE_SENSOR_TYPE_HUMIDITY, String(varbinds[2].value));
                                 break;
                         }
 
@@ -96,10 +97,10 @@ function getOID(_sensorName, _index) {
 //            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '' + _index, '' + _index];
 //            break;
         case 'DS18B20' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.1' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.1.' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
             break;
         case 'SHT' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.1' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.1.' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
             break;
         case 'DI' :
             oids = ['1.3.6.1.4.1.42251.1.3.2.2.2.1.7.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.1.' + _index, '1.3.6.1.4.1.42251.1.2.2.0'];
@@ -111,7 +112,7 @@ function getOID(_sensorName, _index) {
     return oids;
 }
 
-function createStream( _value, _index )
+function createStream( _value, _index, _sensorId )
 {
     var defaultURL = 'http://iotsharewebapi.azurewebsites.net/api/SensorRawData?sessionKey=3230313430373037313331363&DeviceID=00405c8d0e8a&';
     var date = getDate();
@@ -119,7 +120,11 @@ function createStream( _value, _index )
     switch ( _index )
     {
         case DEFINE_SENSOR_TYPE_TEMPERATURE :
-            defaultURL += 'SensorID=00405C8DEF0101010001&sensorType=1&recordTime=' + date;
+            if (_sensorId == "01030001") {
+                defaultURL += 'SensorID=00405C8DEF0101010001&sensorType=1&recordTime=' + date;
+            } else {
+                defaultURL += 'SensorID=00405C8DEF0101010005&sensorType=1&recordTime=' + date;
+            }
             valueFileNamePath = "./db/temperature.txt";
             break;
         case DEFINE_SENSOR_TYPE_HUMIDITY :
@@ -158,18 +163,17 @@ function createStream( _value, _index )
     st.end();
 }
 
-
 var PushSensor = function () {
     var self = this;
     setInterval( function() {
         self.emit('push');
-    }, 30000);
+    }, 60000);
 };
 util.inherits(PushSensor, EventEmitter);
 
 var pushSensor = new PushSensor();
 pushSensor.on('push', function () {
-    test();
+    sendSensorValues();
     console.log("loop");
 });
 
