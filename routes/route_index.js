@@ -81,17 +81,17 @@ router.get('/', function(req, res) {
 });
 
 function getOID(_sensorName, _index) {
-
+    // [센서값, 센서타입, 센서아이디]
     var oids;
     switch (_sensorName) {
         case 'PT100' :
             oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '' + _index, '' + _index];
             break;
         case 'DS18B20' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '' + _index, '' + _index];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.3.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.3.2.1.2.' + _index, '' + _index];
             break;
         case 'SHT' :
-            oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index, '' + _index, '' + _index];
+            oids = ['1.3.6.1.4.1.42251.1.3.2.4.2.1.6.' + _index, '1.3.6.1.4.1.42251.1.3.2.4.2.1.2.' + _index, '' + _index];
             break;
         case 'DI' :
             oids = ['1.3.6.1.4.1.42251.1.3.2.2.2.1.7.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.2.' + _index, '1.3.6.1.4.1.42251.1.3.2.2.2.1.1.' + _index];
@@ -107,19 +107,24 @@ function createStream( _value, _index )
 {
     var defaultURL = 'http://iotsharewebapi.azurewebsites.net/api/SensorRawData?sessionKey=3230313430373037313331363&DeviceID=00405c8d0e8a&';
     var date = getDate();
+    var valueFileNamePath;
     switch ( _index )
     {
         case DEFINE_SENSOR_TYPE_TEMPERATURE :
             defaultURL += 'SensorID=00405C8DEF0101010001&sensorType=1&recordTime=' + date;
+            valueFileNamePath = "./db/temperature.txt";
             break;
         case DEFINE_SENSOR_TYPE_HUMIDITY :
             defaultURL += 'SensorID=00405C8DEF0101010002&sensorType=2&recordTime=' + date;
+            valueFileNamePath = "./db/humidity.txt";
             break;
         case DEFINE_SENSOR_TYPE_FLOODING :
             defaultURL += 'SensorID=00405C8DEF0101010003&sensorType=3&recordTime=' + date;
+            valueFileNamePath = "./db/flooding.txt";
             break;
         case DEFINE_SENSOR_TYPE_DOOR :
             defaultURL += 'SensorID=00405C8DEF0101010004&sensorType=4&recordTime=' + date;
+            valueFileNamePath = "./db/door.txt";
             break;
     }
 
@@ -131,9 +136,9 @@ function createStream( _value, _index )
     };
 
     console.log( 'sensor : type = ' + _index + ", value = " + _value + ", time = " + date );
-    var st = fs.createWriteStream("./db/temp.txt");
+    var st = fs.createWriteStream(valueFileNamePath);
     st.on('finish', function () {
-        fs.createReadStream("./db/temp.txt").pipe( request( options, function ( error, response, body ) {
+        fs.createReadStream(valueFileNamePath).pipe( request( options, function ( error, response, body ) {
             //console.log( "response.statusCode = " + response.statusCode );
             if ( !error && response.statusCode == 200 ) {
                 // Print out the response body
