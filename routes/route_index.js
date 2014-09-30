@@ -122,10 +122,11 @@ function createStream( _value, _index, _sensorId )
         case DEFINE_SENSOR_TYPE_TEMPERATURE :
             if (_sensorId == "01030001") {
                 defaultURL += 'SensorID=00405C8DEF0101010001&sensorType=1&recordTime=' + date;
+                valueFileNamePath = "./db/temperature1.txt";
             } else {
                 defaultURL += 'SensorID=00405C8DEF0101010005&sensorType=1&recordTime=' + date;
+                valueFileNamePath = "./db/temperature2.txt";
             }
-            valueFileNamePath = "./db/temperature.txt";
             break;
         case DEFINE_SENSOR_TYPE_HUMIDITY :
             defaultURL += 'SensorID=00405C8DEF0101010002&sensorType=2&recordTime=' + date;
